@@ -11,6 +11,14 @@ resource "aws_security_group" "wp_sg" {
     protocol        = "tcp"
     security_groups = [var.alb_sg_id] 
   }
+  ingress {
+  description = "TEMP SSH from anywhere"
+  from_port   = 22
+  to_port     = 22
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
 
   egress {
     from_port   = 0
