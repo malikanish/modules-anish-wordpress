@@ -1,11 +1,18 @@
+
 resource "aws_launch_template" "ani_ec2_launch_templ" {
   name_prefix   = var.launch_template_name
   image_id      = var.ami_id
   instance_type = var.instance_type
-  user_data = base64encode(templatefile("${path.module}/userdata_wordpress.sh", {
-    db_ip = var.db_private_ip
-  }))
   key_name      = var.key_name
+
+user_data = base64encode(templatefile("${path.module}/ecs.sh", {
+  cluster_name = var.cluster_name
+}))
+
+iam_instance_profile {
+  name = var.ecs_instance_profile_name
+}
+
 
   network_interfaces {
     security_groups = [var.security_group_id]
@@ -13,13 +20,13 @@ resource "aws_launch_template" "ani_ec2_launch_templ" {
 
   tag_specifications {
     resource_type = "instance"
-
     tags = {
       Name = var.ec2_name
     }
   }
 }
 
+# 5. Auto Scaling Group
 resource "aws_autoscaling_group" "ani_asg" {
   desired_capacity     = var.desired_capacity
   max_size             = var.max_size

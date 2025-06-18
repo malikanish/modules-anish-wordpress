@@ -1,69 +1,23 @@
-variable "launch_template_name" {
-  description = "Prefix for the launch template name"
-  type        = string
-}
-
-variable "ami_id" {
-  description = "AMI ID for EC2 instances"
-  type        = string
-}
-
-variable "instance_type" {
-  description = "EC2 instance type"
-  type        = string
-}
-
-# variable "user_data_path" {
-#   description = "Path to the user data script"
-#   type        = string
-# }
-
-variable "key_name" {
-  description = "Key pair name for SSH access"
-  type        = string
-}
-
-variable "security_group_id" {
-  description = "Security group ID for EC2"
-  type        = string
-}
-
+variable "prefix_name" {}
+variable "launch_template_name" {}
+variable "ami_id" {}
+variable "instance_type" {}
+variable "key_name" {}
+variable "cluster_name" {}
 variable "public_subnet_ids" {
-  description = "List of public subnet IDs where EC2s will launch"
-  type        = list(string)
+  type = list(string)
 }
-
-variable "target_group_arn" {
-  description = "ARN of the target group for ALB"
-  type        = string
-}
-
+variable "security_group_id" {}
+variable "target_group_arn" {}
+variable "asg_name" {}
+variable "desired_capacity" {}
+variable "min_size" {}
+variable "max_size" {}
 variable "ec2_name" {
-  description = "Tag name for EC2 instances"
+  
+}
+
+variable "ecs_instance_profile_name" {
+  description = "IAM instance profile name for ECS EC2"
   type        = string
 }
-
-variable "asg_name" {
-  description = "Name for the Auto Scaling Group"
-  type        = string
-}
-
-variable "desired_capacity" {
-  description = "Desired number of instances"
-  type        = number
-}
-
-variable "max_size" {
-  description = "Maximum number of instances"
-  type        = number
-}
-
-variable "min_size" {
-  description = "Minimum number of instances"
-  type        = number
-}
-
-variable "db_private_ip" {
-  type = string
-}
-

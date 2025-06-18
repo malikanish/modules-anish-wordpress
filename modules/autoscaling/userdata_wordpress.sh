@@ -17,7 +17,7 @@ apt install -y apache2 php libapache2-mod-php php-mysql php-curl php-xml php-mbs
 systemctl enable apache2
 systemctl start apache2
 
-# Clean old web content
+
 rm -rf $${WP_DIR:?}/*
 
 # Download and extract WordPress
@@ -26,7 +26,7 @@ wget https://wordpress.org/latest.tar.gz
 tar -xzf latest.tar.gz
 mv wordpress/* "$${WP_DIR}"
 
-# Configure wp-config.php
+
 cd "$${WP_DIR}"
 cp wp-config-sample.php wp-config.php
 sed -i "s/database_name_here/$${WP_DB_NAME}/" wp-config.php
