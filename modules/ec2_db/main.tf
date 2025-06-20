@@ -13,3 +13,4 @@ resource "aws_instance" "db_instance" {
     Name = var.db_instance_name
   }
 }
+

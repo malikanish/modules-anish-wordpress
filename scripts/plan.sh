@@ -1,4 +1,4 @@
 #!/bin/bash
-set -e
+set -ex
 cd env/dev
-terraform plan -out=finalplan
+terraform plan -var-file="dev.auto.tfvars" -out=tfplan
