@@ -12,7 +12,6 @@ on:
       action:
         description: 'Terraform Action'
         required: true
-        default: 'apply'
         type: choice
         options:
           - apply
@@ -48,9 +47,9 @@ jobs:
           path: env/dev/tfplan
 
       - name: Terraform Apply (Manual Only)
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'apply'
         run: ./scripts/apply.sh
-        
+
       - name: Terraform Destroy (Manual Only)
         if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'destroy'
         run: ./scripts/destroy.sh
