@@ -24,16 +24,13 @@ resource "aws_ecs_task_definition" "wordpress" {
   ])
 }
 
-# data "aws_ssm_parameter" "ecs_ami" {
-#   name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
-# }
 
 
 resource "aws_ecs_service" "wordpress" {
   name            = "wordpress-service"
   cluster         = var.cluster_id
   launch_type     = "EC2"
-  desired_count   = 2
+  desired_count   = 1
   task_definition = aws_ecs_task_definition.wordpress.arn
 
   load_balancer {

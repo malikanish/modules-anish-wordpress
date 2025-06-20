@@ -11,8 +11,6 @@ variable "default_route" {}
 data "aws_availability_zones" "available" {
   state = "available"
 }
-
-
 variable "eip_name" {
   default = "nat-eip"
 }
@@ -24,3 +22,5 @@ variable "nat_gateway_name" {
 variable "private_route_table_name" {
   default = "private-rtb"
 }
+
+
