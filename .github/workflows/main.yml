@@ -12,6 +12,7 @@ on:
       action:
         description: 'Terraform Action'
         required: true
+        default: 'apply'
         type: choice
         options:
           - apply
