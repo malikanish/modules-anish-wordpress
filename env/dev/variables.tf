@@ -27,7 +27,7 @@ variable "private_route_table_name" {
 }
 
 variable "launch_template_name" {}
-variable "ami_id" {}
+
 variable "instance_type" {}
 variable "ec2_name" {}
 variable "asg_name" {}
