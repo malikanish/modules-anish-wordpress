@@ -58,7 +58,7 @@ data "aws_ssm_parameter" "ecs_ami" {
 module "db_ec2" {
   source = "../../modules/ec2_db"
 
-  ami_id            = var.ami_id
+  ami_id            = data.aws_ami.ubuntu_latest.id
   instance_type     = var.instance_type
   private_subnet_id = module.vpc.private_subnet_ids[0]
   key_name          = module.keypair.key_name
