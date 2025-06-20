@@ -6,7 +6,7 @@ set -x
 WP_DB_NAME="wordpress"
 WP_DB_USER="wpuser"
 WP_DB_PASS="password"
-WP_DB_HOST="${db_ip}"  # Terraform will replace this value from template input
+WP_DB_HOST="${db_ip}" 
 WP_DIR="/var/www/html"
 
 # Install packages

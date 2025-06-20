@@ -8,6 +8,15 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      action:
+        description: 'Terraform Action'
+        required: true
+        default: 'apply'
+        type: choice
+        options:
+          - apply
+          - destroy
 jobs:
   terraform:
     runs-on: ubuntu-latest
@@ -41,3 +50,7 @@ jobs:
       - name: Terraform Apply (Manual Only)
         if: github.event_name == 'workflow_dispatch'
         run: ./scripts/apply.sh
+        
+      - name: Terraform Destroy (Manual Only)
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'destroy'
+        run: ./scripts/destroy.sh
