@@ -21,7 +21,7 @@ on:
           - no
 
 jobs:
-  apply-infra:
+  apply:
     if: github.event.inputs.apply == 'yes'
     runs-on: ubuntu-latest
     steps:
@@ -49,7 +49,7 @@ jobs:
       - name: Terraform Apply
         run: ./scripts/apply.sh
 
-  plan-only:
+  plan:
     if: github.event.inputs.apply == 'no' && github.event.inputs.destroy == 'no'
     runs-on: ubuntu-latest
     steps:
@@ -74,7 +74,7 @@ jobs:
       - name: Terraform Plan
         run: ./scripts/plan.sh
 
-  destroy-infra:
+  destroy:
     if: github.event.inputs.destroy == 'yes'
     runs-on: ubuntu-latest
     steps:
