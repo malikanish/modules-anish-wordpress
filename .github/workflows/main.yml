@@ -1,24 +1,28 @@
 name: Terraform CI/CD Ani
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
     inputs:
-      action:
-        description: 'Terraform Action'
+      apply:
+        description: 'Apply Terraform Infrastructure'
         required: true
-        default: 'apply'
+        default: 'no'
         type: choice
         options:
-          - apply
-          - destroy
+          - yes
+          - no
+      destroy:
+        description: 'Destroy Terraform Infrastructure'
+        required: true
+        default: 'no'
+        type: choice
+        options:
+          - yes
+          - no
+
 jobs:
-  terraform:
+  apply-infra:
+    if: github.event.inputs.apply == 'yes'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -35,22 +39,59 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.6.3
+
       - name: Terraform Init
         run: ./scripts/init.sh
 
       - name: Terraform Plan
         run: ./scripts/plan.sh
 
-      - name: Upload Plan Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: finalplan
-          path: env/dev/tfplan
-
-      - name: Terraform Apply (Manual Only)
-        if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'apply'
+      - name: Terraform Apply
         run: ./scripts/apply.sh
 
-      - name: Terraform Destroy (Manual Only)
-        if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'destroy'
+  plan-only:
+    if: github.event.inputs.apply == 'no' && github.event.inputs.destroy == 'no'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.3
+
+      - name: Terraform Init
+        run: ./scripts/init.sh
+
+      - name: Terraform Plan
+        run: ./scripts/plan.sh
+
+  destroy-infra:
+    if: github.event.inputs.destroy == 'yes'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.3
+
+      - name: Terraform Destroy
         run: ./scripts/destroy.sh
