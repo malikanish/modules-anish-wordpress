@@ -1,4 +1,4 @@
-name: Terraform CI/CD Anish bilal
+name: Terraform CI/CD Aniii
 
 on:
   workflow_dispatch:
@@ -13,13 +13,14 @@ on:
           - destroy
 
       confirm:
-        description: 'Proceed with action?'
-        required: true
-        default: 'no'
-        type: choice
-        options:
-          - yes
-          - no
+       description: 'Proceed with action?'
+       required: true
+       default: 'no'
+       type: choice
+       options:
+       - yes
+       - no
+
 
 jobs:
   apply:
