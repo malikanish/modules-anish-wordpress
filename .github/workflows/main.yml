@@ -1,4 +1,4 @@
-name: Terraform CI/CD Anish
+name: Terraform CI/CD Ani
 
 on:
   push:
