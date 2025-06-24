@@ -11,12 +11,15 @@ on:
         options:
           - apply
           - destroy
-
+      
       confirm:
-        description: 'Proceed with action?'
+        description: 'Proceed with action? (Select "yes" to execute)'
         required: true
-        type: boolean
-        default: false
+        default: 'no'
+        type: choice
+        options:
+          - yes
+          - no
 
 jobs:
   terraform-apply:
@@ -40,18 +43,25 @@ jobs:
           terraform_version: 1.6.3
 
       - name: Terraform Init
+        id: init
         run: ./scripts/init.sh
 
       - name: Terraform Plan
+        id: plan
         run: ./scripts/plan.sh
 
+      - name: Show Plan Output
+        run: echo "Terraform Plan generated. Review the output above."
+
       - name: Terraform Apply
-        if: github.event.inputs.confirm == true
-        run: ./scripts/apply.sh
+        if: github.event.inputs.confirm == 'yes'
+        run: |
+          echo "Applying Terraform changes..."
+          ./scripts/apply.sh
 
       - name: Action Skipped
-        if: github.event.inputs.confirm == false
-        run: echo "You selected 'false', so Terraform Apply was skipped. Only the plan was generated."
+        if: github.event.inputs.confirm == 'no'
+        run: echo "❌ You selected 'no', so Terraform Apply was skipped. Only init and plan were executed."
 
   terraform-destroy:
     if: github.event.inputs.action == 'destroy'
@@ -77,9 +87,11 @@ jobs:
         run: ./scripts/init.sh
 
       - name: Terraform Destroy
-        if: github.event.inputs.confirm == true
-        run: ./scripts/destroy.sh
+        if: github.event.inputs.confirm == 'yes'
+        run: |
+          echo "Destroying Terraform infrastructure..."
+          ./scripts/destroy.sh
 
       - name: Destroy Skipped
-        if: github.event.inputs.confirm == false
-        run: echo "You selected 'false', so the destroy action was skipped."
+        if: github.event.inputs.confirm == 'no'
+        run: echo "❌ You selected 'no', so the destroy action was skipped. Only init was executed."
