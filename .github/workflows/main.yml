@@ -1,18 +1,19 @@
-name: Terraform CI/CD Anish
+name: Terraform CI/CD Ani
 
 on:
   workflow_dispatch:
     inputs:
-      apply:
-        description: 'Apply'
+      action:
+        description: 'Select Terraform Action'
         required: true
-        default: 'no'
+        default: 'apply'
         type: choice
         options:
-          - yes
-          - no
-      destroy:
-        description: 'Destroy'
+          - apply
+          - destroy
+
+      confirm:
+        description: 'Proceed with action?'
         required: true
         default: 'no'
         type: choice
@@ -22,7 +23,7 @@ on:
 
 jobs:
   apply:
-    if: github.event.inputs.apply == 'yes'
+    if: github.event.inputs.action == 'apply' && github.event.inputs.confirm == 'yes'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -49,33 +50,8 @@ jobs:
       - name: Terraform Apply
         run: ./scripts/apply.sh
 
-  plan:
-    if: github.event.inputs.apply == 'no' && github.event.inputs.destroy == 'no'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.6.3
-
-      - name: Terraform Init
-        run: ./scripts/init.sh
-
-      - name: Terraform Plan
-        run: ./scripts/plan.sh
-
   destroy:
-    if: github.event.inputs.destroy == 'yes'
+    if: github.event.inputs.action == 'destroy' && github.event.inputs.confirm == 'yes'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -95,3 +71,10 @@ jobs:
 
       - name: Terraform Destroy
         run: ./scripts/destroy.sh
+
+  preview:
+    if: github.event.inputs.confirm == 'no'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skipping Execution
+        run: echo "You selected '${{ github.event.inputs.action }}' but confirmation was 'no'. Skipping workflow."
